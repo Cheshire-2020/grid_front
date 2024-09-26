@@ -1,19 +1,19 @@
 {
-  root: 'Z:\\00337788\\Code\\Java-code\\Grid\\grid_front',
+  root: 'C:\\Users\\77231\\WebstormProjects\\grid_front',
   registry: 'https://registry.npmmirror.com',
   pkgs: [],
   production: false,
   cacheStrict: false,
-  cacheDir: 'C:\\Users\\12102\\.npminstall_tarball',
+  cacheDir: 'C:\\Users\\77231\\.npminstall_tarball',
   env: {
     npm_config_registry: 'https://registry.npmmirror.com',
-    npm_config_argv: '{"remain":[],"cooked":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\12102\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com"],"original":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\12102\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com"]}',
-    npm_config_user_agent: 'npminstall/7.12.0 npm/? node/v18.18.1 win32 x64',
-    npm_config_cache: 'C:\\Users\\12102\\.npminstall_tarball',
+    npm_config_argv: '{"remain":[],"cooked":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\77231\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com"],"original":["--fix-bug-versions","--china","--userconfig=C:\\\\Users\\\\77231\\\\.cnpmrc","--disturl=https://cdn.npmmirror.com/binaries/node","--registry=https://registry.npmmirror.com"]}',
+    npm_config_user_agent: 'npminstall/7.12.0 npm/? node/v18.20.1 win32 x64',
+    npm_config_cache: 'C:\\Users\\77231\\.npminstall_tarball',
     NODE: 'C:\\Program Files\\nodejs\\node.exe',
     npm_node_execpath: 'C:\\Program Files\\nodejs\\node.exe',
-    npm_execpath: 'C:\\Users\\12102\\AppData\\Roaming\\npm\\node_modules\\cnpm\\node_modules\\npminstall\\bin\\install.js',
-    npm_config_userconfig: 'C:\\Users\\12102\\.cnpmrc',
+    npm_execpath: 'C:\\Users\\77231\\AppData\\Roaming\\npm\\node_modules\\cnpm\\node_modules\\npminstall\\bin\\install.js',
+    npm_config_userconfig: 'C:\\Users\\77231\\.cnpmrc',
     npm_config_disturl: 'https://cdn.npmmirror.com/binaries/node',
     npm_config_r: 'https://registry.npmmirror.com',
     COREPACK_NPM_REGISTRY: 'https://registry.npmmirror.com',
@@ -42,8 +42,8 @@
     npm_config_sharp_binary_host: 'https://cdn.npmmirror.com/binaries/sharp',
     npm_config_sharp_libvips_binary_host: 'https://cdn.npmmirror.com/binaries/sharp-libvips',
     npm_config_robotjs_binary_host: 'https://cdn.npmmirror.com/binaries/robotjs',
-    npm_rootpath: 'Z:\\00337788\\Code\\Java-code\\Grid\\grid_front',
-    INIT_CWD: 'Z:\\00337788\\Code\\Java-code\\Grid\\grid_front'
+    npm_rootpath: 'C:\\Users\\77231\\WebstormProjects\\grid_front',
+    INIT_CWD: 'C:\\Users\\77231\\WebstormProjects\\grid_front'
   },
   binaryMirrors: {
     ENVS: {
@@ -179,7 +179,7 @@
   disableFallbackStore: false,
   workspacesMap: Map(0) {},
   enableWorkspace: false,
-  workspaceRoot: 'Z:\\00337788\\Code\\Java-code\\Grid\\grid_front',
+  workspaceRoot: 'C:\\Users\\77231\\WebstormProjects\\grid_front',
   isWorkspaceRoot: true,
   isWorkspacePackage: false,
   offline: false,

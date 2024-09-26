@@ -5,11 +5,10 @@
   const result = ref({});
   onMounted(() => {
     axios.get('http://localhost:8080/api/SysPortGroup/demo').then((res) => {
-      result.value = res.data
+      result.value = res.data;
     });
   });
 </script>
-
 
 <template>
   <div class="container">
