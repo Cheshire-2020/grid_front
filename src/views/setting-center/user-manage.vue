@@ -10,24 +10,17 @@
         <a-button type="primary" @click="showAddUserModal">新增</a-button>
         <a-button
           type="primary"
-          :disabled="!selectedKeys.length"
-          @click="editUser"
-          >编辑</a-button
+          status="danger"
+          :disabled="selectedKeys.length === 0"
+          >批量删除选中项</a-button
         >
-        <a-button
-          type="primary"
-          :disabled="!selectedKeys.length"
-          @click="changeUser"
-          >更改</a-button
-        >
-        <a-button
-          type="primary"
-          :disabled="!selectedKeys.length"
-          @click="deleteUser"
-          >删除</a-button
-        >
-        <a-button type="primary" @click="searchUserModal">搜索</a-button>
-        <input type="text" />
+        <a-input-search
+          :style="{ width: '320px' }"
+          placeholder="请输入用户名"
+          button-text="搜索"
+          search-button
+          @search="searchUser"
+        />
       </a-space>
 
       <p></p>
@@ -36,12 +29,35 @@
       <a-space direction="vertical" size="large" fill>
         <a-table
           v-model:selectedKeys="selectedKeys"
-          row-key="name"
+          row-key="username"
           :columns="columns"
           :data="data"
-          :row-selection="rowSelection"
-          :pagination="pagination"
-        />
+          :row-selection="{
+            type: 'checkbox',
+            showCheckedAll: true,
+            onlyCurrent: false,
+          }"
+        >
+          <template #optional="{ record }">
+            <a-space>
+              <a-button
+                type="primary"
+                @click="
+                  $modal.info({ title: 'name', content: record.username })
+                "
+                >编辑</a-button
+              >
+              <a-button
+                type="primary"
+                status="danger"
+                @click="
+                  $modal.info({ title: 'name', content: record.username })
+                "
+                >删除</a-button
+              >
+            </a-space>
+          </template>
+        </a-table>
       </a-space>
 
       <!-- Add User Modal -->
@@ -54,14 +70,6 @@
         @cancel="closeAddUserModal"
       >
         <a-form :model="addUserForm">
-          <!-- Manual or Bulk Input Selection -->
-          <a-form-item label="输入方式" required>
-            <a-radio-group v-model="addUserForm.inputMethod">
-              <a-radio value="manual">手动输入</a-radio>
-              <a-radio value="bulk">批量导入</a-radio>
-            </a-radio-group>
-          </a-form-item>
-
           <!-- Username Input -->
           <a-form-item label="用户名" required>
             <a-input
@@ -86,43 +94,12 @@
             />
           </a-form-item>
 
-          <!-- Password Retry Limit -->
-          <a-form-item label="密码错误重试次数" required>
-            <a-input-number
-              v-model="addUserForm.retryLimit"
-              :min="1"
-              :max="5"
-            />
-          </a-form-item>
-
-          <!-- Login Timeout -->
-          <a-form-item label="登录超时时间 (min)" required>
-            <a-input-number
-              v-model="addUserForm.timeout"
-              :min="1"
-              :max="99999"
-            />
-          </a-form-item>
-
-          <!-- Is an Active Account -->
-          <a-form-item label="是否允许登录">
-            <a-switch v-model="addUserForm.isActive" />
-          </a-form-item>
-
           <!-- User Type -->
-          <a-form-item label="用户类型">
+          <a-form-item label="用户类型" required>
             <a-select v-model="addUserForm.userType">
-              <a-select-option value="普通用户">普通用户</a-select-option>
-              <a-select-option value="管理员">管理员</a-select-option>
+              <a-option value="user">普通用户</a-option>
+              <a-option value="admin">管理员</a-option>
             </a-select>
-          </a-form-item>
-
-          <!-- Allowed IP -->
-          <a-form-item label="允许登录IP">
-            <a-input
-              v-model="addUserForm.allowedIp"
-              placeholder="输入允许的IP，不限制则留空"
-            />
           </a-form-item>
 
           <!-- Remarks -->
@@ -155,60 +132,31 @@
         },
         columns: [
           { title: '用户名', dataIndex: 'username', key: 'username' },
-          { title: '用户类型', dataIndex: 'userType', key: 'userType' }, // User Type (e.g., 普通用户, 管理员)
-          {
-            title: '状态',
-            dataIndex: 'isActive',
-            key: 'isActive',
-            // Display "启动" for active users and "关闭" for inactive users
-            customRender: ({ isActive }) => (isActive ? '启动' : '关闭'),
-          },
-          {
-            title: '登陆错误次数锁定',
-            dataIndex: 'retryLimit',
-            key: 'retryLimit', // How many times user can attempt incorrect login before lockout
-          },
-          {
-            title: '登录超时(min)',
-            dataIndex: 'timeout',
-            key: 'timeout', // Timeout period in minutes for inactive sessions
-          },
-          {
-            title: '允许登录IP',
-            dataIndex: 'allowedIp',
-            key: 'allowedIp',
-          },
+          { title: '用户类型', dataIndex: 'userType', key: 'userType' },
           {
             title: '备注',
             dataIndex: 'remark',
             key: 'remark',
+          },
+          {
+            title: 'Optional',
+            slotName: 'optional',
           },
         ],
         data: [
           {
             username: 'admin',
             userType: '管理员',
-            isActive: true, // '启动'
-            retryLimit: 5,
-            timeout: 30,
-            allowedIp: '',
             remark: '系统管理员',
           },
           {
             username: 'testuser',
             userType: '普通用户',
-            isActive: false, // '关闭'
-            retryLimit: 3,
-            timeout: 60,
-            allowedIp: '192.168.1.1',
             remark: '测试用户',
           },
         ],
-        rowSelection: {
-          type: 'checkbox',
-        },
         pagination: {
-          pageSize: 5,
+          pageSize: 500,
         },
       };
     },

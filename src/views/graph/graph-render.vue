@@ -1,11 +1,11 @@
 <template>
   <div style="height: 100%">
-    <d3-graph-render-janusgraph
+    <D3GraphRenderJanusgraph
       ref="childRef"
       container-id="layout-content"
       session-key-of-nodes="nodes_janus"
       session-key-of-edges="edges_janus"
-    ></d3-graph-render-janusgraph>
+    ></D3GraphRenderJanusgraph>
   </div>
 </template>
 
