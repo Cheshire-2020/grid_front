@@ -2,7 +2,7 @@
   <div class="container">
     <div class="full-height-panel-container">
       <a-space style="margin-bottom: 20px">
-        <a-button type="primary">新增探测节点</a-button>
+        <a-button type="primary">新增1探测节点</a-button>
         <a-input-search placeholder="输入节点名称/地址" style="width: 300px" />
         <a-button
             type="primary"
