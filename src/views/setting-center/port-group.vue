@@ -30,7 +30,7 @@
               编辑
             </a-button>
             <a-popconfirm
-              content="确定删除该指纹吗？"
+              content="确定删除该节点组吗？"
               @ok="handleDelete(record.id)"
             >
               <a-button

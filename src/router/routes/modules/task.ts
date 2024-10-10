@@ -13,6 +13,16 @@ const DASHBOARD: AppRouteRecordRaw = {
   },
   children: [
     {
+      path: 'task-scan',
+      name: 'task-scan',
+      component: () => import('@/views/task/task-scan.vue'),
+      meta: {
+        locale: '新建任务',
+        requiresAuth: true,
+        roles: ['*'],
+      },
+    },
+    {
       path: 'task-list',
       name: 'task-list',
       component: () => import('@/views/task/task-list.vue'),
