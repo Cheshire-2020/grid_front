@@ -1,10 +1,6 @@
 <template>
   <div class="container">
     <div class="full-height-panel-container">
-      <p></p>
-      <a-typography-text>用户管理</a-typography-text>
-      <p></p>
-
       <!-- Action Buttons -->
       <a-space>
         <a-button type="primary" @click="showAddUserModal">新增</a-button>
@@ -12,8 +8,8 @@
           type="primary"
           status="danger"
           :disabled="selectedKeys.length === 0"
-          >批量删除选中项</a-button
-        >
+          >批量删除选中项
+        </a-button>
         <a-input-search
           :style="{ width: '320px' }"
           placeholder="请输入用户名"
