@@ -1,67 +1,59 @@
 <template>
-  <div class="container">
-    <div class="full-height-panel-container">
-      <a-radio-group type="button" v-model="size">
-        <a-radio value="mini">mini</a-radio>
-        <a-radio value="small">small</a-radio>
-        <a-radio value="medium">medium</a-radio>
-        <a-radio value="large">large</a-radio>
-      </a-radio-group>
-      <p></p>
-      <a-descriptions
-        style="margin-top: 20px"
-        :data="data"
-        :size="size"
-        title="个人中心"
-        :column="1"
-      />
-      <p></p>
+  <basic-container>
+    <a-descriptions
+      style="margin-top: 20px"
+      :data="data"
+      size="medium"
+      title="个人中心"
+      :column="1"
+    />
+    <p></p>
+    <a-space>
+      <a-button type="primary" @click="editUser">编辑</a-button>
+      <a-button type="primary" status="danger" @click="showUpdateKeyModal"
+        >更改密码
+      </a-button>
+    </a-space>
 
-      <a-space>
-        <a-button type="primary" @click="editUser">编辑</a-button>
-        <a-button type="primary" status="danger" @click="showUpdateKeyModal"
-          >更改密码</a-button
-        >
-      </a-space>
-
-      <a-modal
-        v-model:visible="isUpdateKeyModalVisible"
-        title="更改密码"
-        @ok="handleUpdatePassword"
-        @cancel="closeUpdateKeyModal"
-      >
-        <a-form ref="updatePasswordForm" :model="updatePasswordForm">
-          <a-form-item label="旧密码" required>
-            <a-input
-              v-model="updatePasswordForm.oldPassword"
-              placeholder="请输入旧密码"
-              type="password"
-            />
-          </a-form-item>
-          <a-form-item label="新密码" required>
-            <a-input
-              v-model="updatePasswordForm.newPassword"
-              placeholder="请输入新密码"
-              type="password"
-            />
-          </a-form-item>
-          <a-form-item label="确认密码" required>
-            <a-input
-              v-model="updatePasswordForm.confirmPassword"
-              placeholder="再次输入新密码"
-              type="password"
-            />
-          </a-form-item>
-        </a-form>
-      </a-modal>
-    </div>
-  </div>
+    <a-modal
+      v-model:visible="isUpdateKeyModalVisible"
+      title="更改密码"
+      @ok="handleUpdatePassword"
+      @cancel="closeUpdateKeyModal"
+    >
+      <a-form ref="updatePasswordForm" :model="updatePasswordForm">
+        <a-form-item label="旧密码" required>
+          <a-input
+            v-model="updatePasswordForm.oldPassword"
+            placeholder="请输入旧密码"
+            type="password"
+          />
+        </a-form-item>
+        <a-form-item label="新密码" required>
+          <a-input
+            v-model="updatePasswordForm.newPassword"
+            placeholder="请输入新密码"
+            type="password"
+          />
+        </a-form-item>
+        <a-form-item label="确认密码" required>
+          <a-input
+            v-model="updatePasswordForm.confirmPassword"
+            placeholder="再次输入新密码"
+            type="password"
+          />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+  </basic-container>
 </template>
 
 <script>
   import { ref } from 'vue';
+  import BasicContainer from '@/layout/basic-container.vue';
 
   export default {
+    components: { BasicContainer },
     setup() {
       const size = ref('medium');
       const isUpdateKeyModalVisible = ref(false);
@@ -121,13 +113,4 @@
   };
 </script>
 
-<style scoped lang="less">
-  .container {
-    padding: 0px;
-  }
-  .full-height-panel-container {
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-  }
-</style>
+<style scoped lang="less"></style>

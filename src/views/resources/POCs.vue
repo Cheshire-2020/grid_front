@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <basic-container>
     <a-space direction="vertical" size="large" :style="{ width: '100%' }">
       <a-button type="primary" @click="handleAdd">
         <icon-plus />
@@ -14,11 +14,11 @@
         </template>
         <template #actions="{ record }">
           <a-space>
-            <a-button type="text" @click="handleEdit(record)">
+            <a-button type="primary" @click="handleEdit(record)">
               <icon-edit />
               编辑
             </a-button>
-            <a-button type="text" @click="handleViewCode(record)">
+            <a-button type="primary" status="warning" @click="handleViewCode(record)">
               <icon-code />
               查看代码
             </a-button>
@@ -26,7 +26,7 @@
               content="确定删除该 POC 吗？"
               @ok="handleDelete(record.id)"
             >
-              <a-button type="text" status="danger">
+              <a-button type="primary" status="danger">
                 <icon-delete />
                 删除
               </a-button>
@@ -76,7 +76,7 @@
     >
       <pre><code>{{ selectedCode }}</code></pre>
     </a-modal>
-  </div>
+  </basic-container>
 </template>
 
 <script lang="ts">
@@ -88,6 +88,7 @@
     IconDelete,
     IconCode,
   } from '@arco-design/web-vue/es/icon';
+  import BasicContainer from '@/layout/basic-container.vue';
 
   interface PoCItem {
     id: string;
@@ -100,6 +101,7 @@
 
   export default defineComponent({
     components: {
+      BasicContainer,
       IconPlus,
       IconEdit,
       IconDelete,

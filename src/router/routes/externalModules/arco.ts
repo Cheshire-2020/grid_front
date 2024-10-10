@@ -1,5 +1,5 @@
 export default {
-  path: 'https://arco.design',
+  path: 'https://arco.design/vue/component/button',
   name: 'arcoWebsite',
   meta: {
     locale: 'menu.arcoWebsite',

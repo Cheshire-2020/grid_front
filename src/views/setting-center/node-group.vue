@@ -1,22 +1,19 @@
 <template>
-  <div class="container">
-    <div class="left-side">
-      <div class="panel">
-        <a-card class="general-card" title="节点组一览">
-          <a-table
-            :bordered="false"
-            :columns="columns"
-            :data="data"
-            :pagination="pagination"
-          />
-        </a-card>
-      </div>
-    </div>
-  </div>
+  <basic-container>
+    <a-card class="general-card" title="节点组一览">
+      <a-table
+        :bordered="false"
+        :columns="columns"
+        :data="data"
+        :pagination="pagination"
+      />
+    </a-card>
+  </basic-container>
 </template>
 
 <script setup>
   import { reactive } from 'vue';
+  import BasicContainer from '@/layout/basic-container.vue';
 
   const pagination = { pageSize: 5 };
   const columns = [

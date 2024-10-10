@@ -1,115 +1,108 @@
 <template>
-  <div class="container">
-    <div class="full-height-panel-container">
-      <!-- Action Buttons -->
-      <a-space>
-        <a-button type="primary" @click="showAddUserModal">新增</a-button>
-        <a-button
-          type="primary"
-          status="danger"
-          :disabled="selectedKeys.length === 0"
-          >批量删除选中项
-        </a-button>
-        <a-input-search
-          :style="{ width: '320px' }"
-          placeholder="请输入用户名"
-          button-text="搜索"
-          search-button
-          @search="searchUser"
-        />
-      </a-space>
+  <basic-container>
+    <a-space>
+      <a-button type="primary" @click="showAddUserModal">新增</a-button>
+      <a-button
+        type="primary"
+        status="danger"
+        :disabled="selectedKeys.length === 0"
+        >批量删除选中项
+      </a-button>
+      <a-input-search
+        :style="{ width: '320px' }"
+        placeholder="请输入用户名"
+        button-text="搜索"
+        search-button
+        @search="searchUser"
+      />
+    </a-space>
 
-      <p></p>
+    <p></p>
 
-      <!-- User Table -->
-      <a-space direction="vertical" size="large" fill>
-        <a-table
-          v-model:selectedKeys="selectedKeys"
-          row-key="username"
-          :columns="columns"
-          :data="data"
-          :row-selection="{
-            type: 'checkbox',
-            showCheckedAll: true,
-            onlyCurrent: false,
-          }"
-        >
-          <template #optional="{ record }">
-            <a-space>
-              <a-button
-                type="primary"
-                @click="
-                  $modal.info({ title: 'name', content: record.username })
-                "
-                >编辑</a-button
-              >
-              <a-button
-                type="primary"
-                status="danger"
-                @click="
-                  $modal.info({ title: 'name', content: record.username })
-                "
-                >删除</a-button
-              >
-            </a-space>
-          </template>
-        </a-table>
-      </a-space>
-
-      <!-- Add User Modal -->
-      <a-modal
-        v-model:visible="isAddUserModalVisible"
-        title="新增用户"
-        ok-text="保存"
-        cancel-text="取消"
-        @ok="handleAddUser"
-        @cancel="closeAddUserModal"
+    <!-- User Table -->
+    <a-space direction="vertical" size="large" fill>
+      <a-table
+        v-model:selectedKeys="selectedKeys"
+        row-key="username"
+        :columns="columns"
+        :data="data"
+        :row-selection="{
+          type: 'checkbox',
+          showCheckedAll: true,
+          onlyCurrent: false,
+        }"
       >
-        <a-form :model="addUserForm">
-          <!-- Username Input -->
-          <a-form-item label="用户名" required>
-            <a-input
-              v-model="addUserForm.username"
-              placeholder="请输入用户名"
-            />
-          </a-form-item>
+        <template #optional="{ record }">
+          <a-space>
+            <a-button
+              type="primary"
+              @click="$modal.info({ title: 'name', content: record.username })"
+              >编辑
+            </a-button>
+            <a-button
+              type="primary"
+              status="danger"
+              @click="$modal.info({ title: 'name', content: record.username })"
+              >删除
+            </a-button>
+          </a-space>
+        </template>
+      </a-table>
+    </a-space>
 
-          <!-- Password Input -->
-          <a-form-item label="输入密码" required>
-            <a-input-password
-              v-model="addUserForm.password"
-              placeholder="请输入密码"
-            />
-          </a-form-item>
+    <!-- Add User Modal -->
+    <a-modal
+      v-model:visible="isAddUserModalVisible"
+      title="新增用户"
+      ok-text="保存"
+      cancel-text="取消"
+      @ok="handleAddUser"
+      @cancel="closeAddUserModal"
+    >
+      <a-form :model="addUserForm">
+        <!-- Username Input -->
+        <a-form-item label="用户名" required>
+          <a-input v-model="addUserForm.username" placeholder="请输入用户名" />
+        </a-form-item>
 
-          <!-- Confirm Password -->
-          <a-form-item label="确认密码" required>
-            <a-input-password
-              v-model="addUserForm.confirmPassword"
-              placeholder="请再次输入密码"
-            />
-          </a-form-item>
+        <!-- Password Input -->
+        <a-form-item label="输入密码" required>
+          <a-input-password
+            v-model="addUserForm.password"
+            placeholder="请输入密码"
+          />
+        </a-form-item>
 
-          <!-- User Type -->
-          <a-form-item label="用户类型" required>
-            <a-select v-model="addUserForm.userType">
-              <a-option value="user">普通用户</a-option>
-              <a-option value="admin">管理员</a-option>
-            </a-select>
-          </a-form-item>
+        <!-- Confirm Password -->
+        <a-form-item label="确认密码" required>
+          <a-input-password
+            v-model="addUserForm.confirmPassword"
+            placeholder="请再次输入密码"
+          />
+        </a-form-item>
 
-          <!-- Remarks -->
-          <a-form-item label="备注">
-            <a-input v-model="addUserForm.remark" placeholder="请输入备注" />
-          </a-form-item>
-        </a-form>
-      </a-modal>
-    </div>
-  </div>
+        <!-- User Type -->
+        <a-form-item label="用户类型" required>
+          <a-select v-model="addUserForm.userType">
+            <a-option value="user">普通用户</a-option>
+            <a-option value="admin">管理员</a-option>
+          </a-select>
+        </a-form-item>
+
+        <!-- Remarks -->
+        <a-form-item label="备注">
+          <a-input v-model="addUserForm.remark" placeholder="请输入备注" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+  </basic-container>
 </template>
 
 <script>
+  import BasicContainer from '@/layout/basic-container.vue';
+
   export default {
+    components: { BasicContainer },
     data() {
       return {
         selectedKeys: [],
@@ -228,13 +221,4 @@
   };
 </script>
 
-<style scoped lang="less">
-  .container {
-    padding: 0px;
-  }
-  .full-height-panel-container {
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-  }
-</style>
+<style scoped lang="less"></style>

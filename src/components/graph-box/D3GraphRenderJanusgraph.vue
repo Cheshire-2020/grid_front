@@ -159,10 +159,6 @@
     return (d) => scale(d.group);
   };
 
-  const getBoundingClientRect = () => {
-    return this.getBoundingClientRect();
-  };
-
   const lockGraph = () => {
     const simulation = d3.forceSimulation(d3Nodes.value);
     const lockedNodes = d3Nodes.value;
@@ -370,7 +366,8 @@
 <style>
   .d3-graph-render-container {
     border-radius: 8px;
-    background: rgb(235, 241, 246);
+    overflow: hidden;
+    background: white;
   }
 
   .link:hover {

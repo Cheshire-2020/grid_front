@@ -1,103 +1,105 @@
 <template>
-  <div class="container">
-    <div class="full-height-panel-container">
-      <!-- 新增、批量删除按钮 -->
-      <a-space>
-        <a-button type="primary" @click="openAddModal">新增</a-button>
-        <a-button
-          type="primary"
-          :disabled="selectedRowKeys.length === 0"
-          @click="batchDelete"
-          >批量删除</a-button
-        >
-      </a-space>
-
-      <!-- 表格展示 -->
-      <a-table
-        row-key="id"
-        :columns="columns"
-        :data="data"
-        :row-selection="{
-          selectedRowKeys,
-          onChange: handleSelectionChange,
-        }"
-        pagination
+  <basic-container>
+    <!-- 新增、批量删除按钮 -->
+    <a-space>
+      <a-button type="primary" @click="openAddModal">新增</a-button>
+      <a-button
+        type="primary" status="danger"
+        :disabled="selectedRowKeys.length === 0"
+        @click="batchDelete"
+        >批量删除</a-button
       >
-        <template #action="{ record }">
-          <a-space>
-            <a-button type="primary" @click="openEditModal(record)">
-              <icon-edit />
-              编辑
-            </a-button>
-            <a-popconfirm
-              content="确定删除该节点组吗？"
-              @ok="handleDelete(record.id)"
+    </a-space>
+
+    <p></p>
+
+    <!-- 表格展示 -->
+    <a-table
+      row-key="id"
+      :columns="columns"
+      :data="data"
+      :row-selection="{
+        selectedRowKeys,
+        onChange: handleSelectionChange,
+      }"
+      pagination
+    >
+      <template #action="{ record }">
+        <a-space>
+          <a-button type="primary" @click="openEditModal(record)">
+            <icon-edit />
+            编辑
+          </a-button>
+          <a-popconfirm
+            content="确定删除该节点组吗？"
+            @ok="handleDelete(record.id)"
+          >
+            <a-button
+              type="primary"
+              status="danger"
+              @click="handleDelete(record)"
             >
-              <a-button
-                type="primary"
-                status="danger"
-                @click="handleDelete(record)"
-              >
-                <icon-delete />
-                删除
-              </a-button>
-            </a-popconfirm>
-          </a-space>
-        </template>
-      </a-table>
+              <icon-delete />
+              删除
+            </a-button>
+          </a-popconfirm>
+        </a-space>
+      </template>
+    </a-table>
 
-      <!-- 新增端口组的表单弹窗 -->
-      <a-modal
-        v-model:visible="visible"
-        title="新增端口组"
-        @ok="handleAdd"
-        @cancel="closeAddModal"
+    <!-- 新增端口组的表单弹窗 -->
+    <a-modal
+      v-model:visible="visible"
+      title="新增端口组"
+      @ok="handleAdd"
+      @cancel="closeAddModal"
+    >
+      <a-form
+        ref="addFormRef"
+        :model="addForm"
+        :rules="rules"
+        label-align="right"
       >
-        <a-form
-          ref="addFormRef"
-          :model="addForm"
-          :rules="rules"
-          label-align="right"
-        >
-          <a-form-item label="别名" field="alias">
-            <a-input v-model="addForm.alias" />
-          </a-form-item>
-          <a-form-item label="TCP端口" field="tcpPort">
-            <a-input v-model="addForm.tcpPort" />
-          </a-form-item>
-          <a-form-item label="UDP端口" field="udpPort">
-            <a-input v-model="addForm.udpPort" />
-          </a-form-item>
-        </a-form>
-      </a-modal>
+        <a-form-item label="别名" field="alias">
+          <a-input v-model="addForm.alias" />
+        </a-form-item>
+        <a-form-item label="TCP端口" field="tcpPort">
+          <a-input v-model="addForm.tcpPort" />
+        </a-form-item>
+        <a-form-item label="UDP端口" field="udpPort">
+          <a-input v-model="addForm.udpPort" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
 
-      <!-- 编辑端口组的表单弹窗 -->
-      <a-modal
-        v-model:visible="isEditModalVisible"
-        title="编辑端口组"
-        @ok="handleEdit"
-        @cancel="closeEditModal"
-      >
-        <a-form ref="editFormRef" :model="editForm" label-align="right">
-          <a-form-item label="别名" field="alias">
-            <a-input v-model="editForm.alias" />
-          </a-form-item>
-          <a-form-item label="TCP端口" field="tcpPort">
-            <a-input v-model="editForm.tcpPort" />
-          </a-form-item>
-          <a-form-item label="UDP端口" field="udpPort">
-            <a-input v-model="editForm.udpPort" />
-          </a-form-item>
-        </a-form>
-      </a-modal>
-    </div>
-  </div>
+    <!-- 编辑端口组的表单弹窗 -->
+    <a-modal
+      v-model:visible="isEditModalVisible"
+      title="编辑端口组"
+      @ok="handleEdit"
+      @cancel="closeEditModal"
+    >
+      <a-form ref="editFormRef" :model="editForm" label-align="right">
+        <a-form-item label="别名" field="alias">
+          <a-input v-model="editForm.alias" />
+        </a-form-item>
+        <a-form-item label="TCP端口" field="tcpPort">
+          <a-input v-model="editForm.tcpPort" />
+        </a-form-item>
+        <a-form-item label="UDP端口" field="udpPort">
+          <a-input v-model="editForm.udpPort" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
+  </basic-container>
 </template>
 
 <script>
   import { ref } from 'vue';
+  import BasicContainer from '@/layout/basic-container.vue';
 
   export default {
+    components: { BasicContainer },
     setup() {
       const data = ref([
         { id: 1, alias: '组1', tcpPort: '8080,9090', udpPort: '8000,9000' },
@@ -198,12 +200,4 @@
 </script>
 
 <style scoped lang="less">
-  .container {
-    padding: 0px;
-  }
-  .full-height-panel-container {
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-  }
 </style>

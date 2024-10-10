@@ -1,55 +1,57 @@
 <template>
-  <div class="container">
-    <div class="full-height-panel-container">
-      <a-space style="margin-bottom: 20px">
-        <a-button type="primary">新增探测节点</a-button>
-        <a-input-search placeholder="输入节点名称/地址" style="width: 300px" />
-        <a-button
-          type="primary"
-          status="danger"
-          :disabled="selectedKeys.length === 0"
-          >批量删除选中项</a-button
-        >
-        <a-button type="primary">刷新</a-button>
-        <a-button type="primary">调整</a-button>
-        <a-button type="primary">重启</a-button>
-      </a-space>
+  <basic-container>
+    <a-space>
+      <a-button type="primary">新增探测节点</a-button>
+      <a-input-search placeholder="输入节点名称/地址" style="width: 300px" />
+      <a-button
+        type="primary"
+        status="danger"
+        :disabled="selectedKeys.length === 0"
+        >批量删除选中项</a-button
+      >
+      <a-button type="primary">刷新</a-button>
+      <a-button type="primary">调整</a-button>
+      <a-button type="primary">重启</a-button>
+    </a-space>
 
-      <a-space direction="vertical" size="large" fill>
-        <a-table
-          v-model:selectedKeys="selectedKeys"
-          :columns="columns"
-          :data="data"
-          row-key="ip"
-          pagination
-        >
-          <template #operation="{ record }">
-            <a-space>
-              <a-button type="link" @click="viewDetails(record)">详情</a-button>
-            </a-space>
-          </template>
+    <p></p>
 
-          <template #cpu="{ record }">
-            <a-progress :percent="record.cpu" />
-          </template>
+    <a-space direction="vertical" size="large" fill>
+      <a-table
+        v-model:selectedKeys="selectedKeys"
+        :columns="columns"
+        :data="data"
+        row-key="ip"
+        pagination
+      >
+        <template #operation="{ record }">
+          <a-space>
+            <a-button type="link" @click="viewDetails(record)">详情</a-button>
+          </a-space>
+        </template>
 
-          <template #memory="{ record }">
-            <a-progress :percent="record.memory" />
-          </template>
+        <template #cpu="{ record }">
+          <a-progress :percent="record.cpu" />
+        </template>
 
-          <template #disk="{ record }">
-            <a-progress :percent="record.disk" />
-          </template>
-        </a-table>
-      </a-space>
-    </div>
-  </div>
+        <template #memory="{ record }">
+          <a-progress :percent="record.memory" />
+        </template>
+
+        <template #disk="{ record }">
+          <a-progress :percent="record.disk" />
+        </template>
+      </a-table>
+    </a-space>
+  </basic-container>
 </template>
 
 <script>
   import { ref } from 'vue';
+  import BasicContainer from '@/layout/basic-container.vue';
 
   export default {
+    components: { BasicContainer },
     setup() {
       const columns = [
         { title: '探测节点IP', dataIndex: 'ip', key: 'ip' },
@@ -114,14 +116,3 @@
     },
   };
 </script>
-
-<style scoped lang="less">
-  .container {
-    padding: 10px;
-  }
-  .full-height-panel-container {
-    width: 100%;
-    height: 100%;
-    padding: 20px;
-  }
-</style>

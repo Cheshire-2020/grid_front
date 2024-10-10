@@ -17,8 +17,7 @@ setupMock({
         const role = window.localStorage.getItem('userRole') || 'admin';
         return successResponseWrap({
           name: 'admin',
-          avatar:
-            'https://th.bing.com/th/id/R.5a87e73b4a4b39cba5540e1c2200b3c5?rik=K6hFOIPMJ4IJ5g&pid=ImgRaw&r=0',
+          avatar: '',
           email: 'wangliqun@email.com',
           job: 'frontend',
           jobName: '前端艺术家',
@@ -89,11 +88,11 @@ setupMock({
               },
             },
             {
-              path: 'https://arco.design',
+              path: 'https://arco.design/vue/component/button',
               name: 'arcoWebsite',
               meta: {
                 locale: 'menu.arcoWebsite',
-                requiresAuth: true,
+                requiresAuth: false,
               },
             },
           ],

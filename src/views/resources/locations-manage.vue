@@ -1,18 +1,18 @@
 <template>
-  <div>
+  <basic-container>
     <a-space direction="vertical" size="large" :style="{ width: '100%' }">
       <a-row justify="space-between">
-        <a-col>
+        <a-col :span="2">
           <a-button type="primary" @click="handleAdd">
             <icon-plus />
             添加位置
           </a-button>
         </a-col>
-        <a-col>
+        <a-col flex="auto">
           <a-input-search
             v-model="searchKeyword"
             placeholder="搜索位置"
-            style="width: 300px"
+            style="width: 500px"
             @search="handleSearch"
           />
         </a-col>
@@ -68,13 +68,14 @@
         </a-form-item>
       </a-form>
     </a-modal>
-  </div>
+  </basic-container>
 </template>
 
 <script lang="ts">
   import { defineComponent, ref, reactive, computed, onMounted } from 'vue';
   import { Message } from '@arco-design/web-vue';
   import { IconPlus, IconEdit, IconDelete } from '@arco-design/web-vue/es/icon';
+  import BasicContainer from '@/layout/basic-container.vue';
 
   interface LocationItem {
     id: string;
@@ -87,6 +88,7 @@
 
   export default defineComponent({
     components: {
+      BasicContainer,
       IconPlus,
       IconEdit,
       IconDelete,

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <basic-container>
     <a-space direction="vertical" size="large" :style="{ width: '100%' }">
       <a-button type="primary" @click="handleAdd">
         <icon-plus />
@@ -9,7 +9,7 @@
       <a-table :columns="columns" :data="fingerprints" :loading="loading">
         <template #actions="{ record }">
           <a-space>
-            <a-button type="text" @click="handleEdit(record)">
+            <a-button type="primary" @click="handleEdit(record)">
               <icon-edit />
               编辑
             </a-button>
@@ -17,7 +17,7 @@
               content="确定删除该指纹吗？"
               @ok="handleDelete(record.id)"
             >
-              <a-button type="text" status="danger">
+              <a-button type="primary" status="danger">
                 <icon-delete />
                 删除
               </a-button>
@@ -49,13 +49,14 @@
         </a-form-item>
       </a-form>
     </a-modal>
-  </div>
+  </basic-container>
 </template>
 
 <script lang="ts">
   import { defineComponent, ref, reactive, onMounted } from 'vue';
   import { Message } from '@arco-design/web-vue';
   import { IconPlus, IconEdit, IconDelete } from '@arco-design/web-vue/es/icon';
+  import BasicContainer from '@/layout/basic-container.vue';
 
   interface FingerprintItem {
     id: string;
@@ -66,6 +67,7 @@
 
   export default defineComponent({
     components: {
+      BasicContainer,
       IconPlus,
       IconEdit,
       IconDelete,
