@@ -4,7 +4,8 @@
     <a-space>
       <a-button type="primary" @click="openAddModal">新增</a-button>
       <a-button
-        type="primary" status="danger"
+        type="primary"
+        status="danger"
         :disabled="selectedRowKeys.length === 0"
         @click="batchDelete"
         >批量删除</a-button
@@ -199,5 +200,4 @@
   };
 </script>
 
-<style scoped lang="less">
-</style>
+<style scoped lang="less"></style>

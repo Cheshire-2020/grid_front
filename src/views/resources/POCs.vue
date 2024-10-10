@@ -18,7 +18,11 @@
               <icon-edit />
               编辑
             </a-button>
-            <a-button type="primary" status="warning" @click="handleViewCode(record)">
+            <a-button
+              type="primary"
+              status="warning"
+              @click="handleViewCode(record)"
+            >
               <icon-code />
               查看代码
             </a-button>

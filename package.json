@@ -33,6 +33,7 @@
   "dependencies": {
     "@arco-design/web-vue": "^2.56.2",
     "@vueuse/core": "^9.3.0",
+    "ant-design-vue": "^4.2.5",
     "arco-design-pro-vue": "^2.7.3",
     "axios": "^0.24.0",
     "d3": "^5.15.0",
