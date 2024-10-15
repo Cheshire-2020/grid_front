@@ -1,48 +1,47 @@
 <template>
   <a-layout class="layout" :class="{ mobile: appStore.hideMenu }">
-    <a-watermark :content="[userInfo.name, dayjs().format('YYYY-MM-DD')]">
-      <div v-if="navbar" class="layout-navbar">
-        <NavBar />
-      </div>
+    <!--    <a-watermark :content="[userInfo.name, dayjs().format('YYYY-MM-DD')]">-->
+    <div v-if="navbar" class="layout-navbar">
+      <NavBar />
+    </div>
+    <a-layout>
       <a-layout>
-        <a-layout>
-          <a-layout-sider
-            v-if="renderMenu"
-            v-show="!hideMenu"
-            class="layout-sider"
-            breakpoint="xl"
-            :collapsed="collapsed"
-            :collapsible="true"
-            :width="menuWidth"
-            :style="{ paddingTop: navbar ? '60px' : '' }"
-            :hide-trigger="true"
-            @collapse="setCollapsed"
-          >
-            <div class="menu-wrapper">
-              <Menu />
-            </div>
-          </a-layout-sider>
-          <a-drawer
-            v-if="hideMenu"
-            :visible="drawerVisible"
-            placement="left"
-            :footer="false"
-            mask-closable
-            :closable="false"
-            @cancel="drawerCancel"
-          >
+        <a-layout-sider
+          v-if="renderMenu"
+          v-show="!hideMenu"
+          class="layout-sider"
+          breakpoint="xl"
+          :collapsed="collapsed"
+          :collapsible="true"
+          :width="menuWidth"
+          :style="{ paddingTop: navbar ? '60px' : '' }"
+          :hide-trigger="true"
+          @collapse="setCollapsed"
+        >
+          <div class="menu-wrapper">
             <Menu />
-          </a-drawer>
-          <a-layout class="layout-content" :style="paddingStyle">
-            <TabBar v-if="appStore.tabBar" />
-            <a-layout-content id="layout-content">
-              <PageLayout />
-            </a-layout-content>
-            <Footer v-if="footer" />
-          </a-layout>
+          </div>
+        </a-layout-sider>
+        <a-drawer
+          v-if="hideMenu"
+          :visible="drawerVisible"
+          placement="left"
+          :footer="false"
+          mask-closable
+          :closable="false"
+          @cancel="drawerCancel"
+        >
+          <Menu />
+        </a-drawer>
+        <a-layout class="layout-content" :style="paddingStyle">
+          <TabBar v-if="appStore.tabBar" />
+          <a-layout-content id="layout-content">
+            <PageLayout />
+          </a-layout-content>
+          <Footer v-if="footer" />
         </a-layout>
       </a-layout>
-    </a-watermark>
+    </a-layout>
   </a-layout>
 </template>
 
