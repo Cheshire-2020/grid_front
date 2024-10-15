@@ -36,28 +36,40 @@
       >
         <template #time="{ record }">
           <span>开始时间：{{ record.timeStart }}</span>
-          <br>
+          <br />
           <span>结束时间：{{ record.timeEnd }}</span>
         </template>
         <template #process="{ record }">
-          <div style="display: flex; flex-direction: column; align-items: flex-start;">
-            <div style="display: flex; align-items: center;">
-              <span style="width: 100px;">存活探测</span>
-              <a-progress :percent="record.percent1"
-                          :stroke-color="getStrokeColor(record)"
-                          :status="getProgressStatus(record)" />
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              align-items: flex-start;
+            "
+          >
+            <div style="display: flex; align-items: center">
+              <span style="width: 100px">存活探测</span>
+              <a-progress
+                :percent="record.percent1"
+                :stroke-color="getStrokeColor(record)"
+                :status="getProgressStatus(record)"
+              />
             </div>
-            <div style="display: flex; align-items: center;">
-              <span style="width: 100px;">指纹探测</span>
-              <a-progress :percent="record.percent2"
-                          :stroke-color="getStrokeColor(record)"
-                          :status="getProgressStatus(record)" />
+            <div style="display: flex; align-items: center">
+              <span style="width: 100px">指纹探测</span>
+              <a-progress
+                :percent="record.percent2"
+                :stroke-color="getStrokeColor(record)"
+                :status="getProgressStatus(record)"
+              />
             </div>
-            <div style="display: flex; align-items: center;">
-              <span style="width: 100px;">拓扑探测</span>
-              <a-progress :percent="record.percent3"
-                          :stroke-color="getStrokeColor(record)"
-                          :status="getProgressStatus(record)" />
+            <div style="display: flex; align-items: center">
+              <span style="width: 100px">拓扑探测</span>
+              <a-progress
+                :percent="record.percent3"
+                :stroke-color="getStrokeColor(record)"
+                :status="getProgressStatus(record)"
+              />
             </div>
           </div>
         </template>
@@ -73,7 +85,6 @@
   // 引入Ant Design Vue的消息组件
 
   export default {
-
     components: { BasicContainer },
     setup() {
       const selectedKeys = ref([]);
@@ -104,7 +115,7 @@
           name: '任务1',
           type: '探测任务',
           timeStart: '2024-10-01 12:00',
-          timeEnd:'2024-10-01 14:00',
+          timeEnd: '2024-10-01 14:00',
           target: '192.168.0.1-192.168.0.100',
           ports: 'TCP:80,443',
           scanCount: 1,
@@ -173,14 +184,14 @@
 
       // searchTask函数：根据输入的关键词，过滤任务数据，过滤规则是任务名称中包含搜索关键词（不区分大小写）
       function searchTask(value) {
-        const keyword = value.trim().toLowerCase();  // 去除空格并转换为小写
+        const keyword = value.trim().toLowerCase(); // 去除空格并转换为小写
         if (keyword === '') {
           // 如果关键词为空，显示所有数据
           filteredData.value = [...data.value];
         } else {
           // 根据关键词进行过滤
           filteredData.value = data.value.filter((task) =>
-              task.name.toLowerCase().includes(keyword)
+            task.name.toLowerCase().includes(keyword)
           );
         }
       }
@@ -199,7 +210,11 @@
             task.percent3 = Math.min((task.percent3 * 100 + 1) / 100, 1); // 确保增加0.01
           }
 
-          if (task.percent1 === 1 && task.percent2 === 1 && task.percent3 === 1) {
+          if (
+            task.percent1 === 1 &&
+            task.percent2 === 1 &&
+            task.percent3 === 1
+          ) {
             task.status = 'finished';
             message.success(`${task.name} 已完成`);
           }
@@ -251,13 +266,15 @@
       }
 
       function bulkDelete() {
-        data.value = data.value.filter((task) => !selectedKeys.value.includes(task.name));
+        data.value = data.value.filter(
+          (task) => !selectedKeys.value.includes(task.name)
+        );
         message.success('选中的任务已删除');
       }
 
       // 设置进度条颜色
       function getProgressColor(status) {
-        console.log(status)
+        console.log(status);
         switch (status) {
           case 'paused':
             return '#FADB14'; // 黄色

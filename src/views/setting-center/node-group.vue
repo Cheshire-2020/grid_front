@@ -1,76 +1,230 @@
 <template>
   <basic-container>
-    <a-card class="general-card" title="节点组一览">
-      <a-table
-        :bordered="false"
-        :columns="columns"
-        :data="data"
-        :pagination="pagination"
+    <a-space>
+      <a-button type="primary" @click="showAddNodeModal">新增</a-button>
+      <a-button
+        type="primary"
+        status="danger"
+        :disabled="selectedKeys.length === 0"
+        @click="bulkDelete"
+        >批量删除选中项
+      </a-button>
+      <a-input-search
+        :style="{ width: '320px' }"
+        placeholder="请输入节点组名"
+        button-text="搜索"
+        search-button
+        @search="searchAKAname"
       />
-    </a-card>
+    </a-space>
+
+    <p></p>
+
+    <!-- User Table -->
+    <a-space direction="vertical" size="large" fill>
+      <a-table
+        v-model:selectedKeys="selectedKeys"
+        row-key="AKAname"
+        :columns="columns"
+        :data="filteredData"
+        :row-selection="{
+          type: 'checkbox',
+          showCheckedAll: true,
+          onlyCurrent: false,
+        }"
+      >
+        <template #optional="{ record }">
+          <a-space>
+            <a-button type="primary" @click="handleEdit(record)"
+              >编辑
+            </a-button>
+            <a-popconfirm
+              content="确定删除该节点组吗？"
+              @ok="handleDelete(record.AKAname)"
+            >
+              <a-button type="primary" status="danger">删除 </a-button>
+            </a-popconfirm>
+          </a-space>
+        </template>
+      </a-table>
+    </a-space>
+
+    <!-- Add/Edit User Modal -->
+    <a-modal
+      v-model:visible="isAddUserModalVisible"
+      title="新增/编辑用户"
+      ok-text="保存"
+      cancel-text="取消"
+      @ok="handleAddOrEditUser"
+      @cancel="closeAddUserModal"
+    >
+      <a-form :model="addUserForm">
+        <a-form-item label="节点组名" required>
+          <a-input
+            v-model="addUserForm.AKAname"
+            placeholder="请输入节点组名称"
+          />
+        </a-form-item>
+        <a-form-item label="IP段">
+          <a-input v-model="addUserForm.tcpPort" placeholder="IP段" />
+        </a-form-item>
+        <a-form-item label="备注">
+          <a-input v-model="addUserForm.remark" placeholder="备注" />
+        </a-form-item>
+      </a-form>
+    </a-modal>
   </basic-container>
 </template>
 
-<script setup>
-  import { reactive } from 'vue';
+<script>
+  import { ref, reactive, computed } from 'vue';
   import BasicContainer from '@/layout/basic-container.vue';
+  import { Modal, message } from 'ant-design-vue';
 
-  const pagination = { pageSize: 5 };
-  const columns = [
-    {
-      title: 'Name',
-      dataIndex: 'name',
+  export default {
+    components: { BasicContainer },
+    setup() {
+      const selectedKeys = ref([]);
+      const isAddUserModalVisible = ref(false);
+      const editMode = ref(false); // 用于区分新增和编辑模式
+
+      // 响应式表单数据
+      const addUserForm = reactive({
+        AKAname: '',
+        tcpPort: '',
+        remark: '',
+      });
+
+      const searchKeyword = ref(''); // 搜索关键字
+
+      const data = ref([
+        { AKAname: '组1', tcpPort: '80,23', remark: '631' },
+        { AKAname: '组2', tcpPort: '443,21', remark: '137' },
+      ]);
+
+      const columns = reactive([
+        { title: '节点组名称', dataIndex: 'AKAname', key: 'AKAname' },
+        { title: 'IP段', dataIndex: 'tcpPort', key: 'tcpPort' },
+        { title: '备注', dataIndex: 'remark', key: 'remark' },
+        { title: '操作', slotName: 'optional' },
+      ]);
+
+      // 基于搜索关键字过滤数据
+      const filteredData = computed(() => {
+        if (!searchKeyword.value) return data.value;
+        return data.value.filter((item) =>
+          item.AKAname.includes(searchKeyword.value)
+        );
+      });
+
+      // 重置表单数据
+      const resetForm = () => {
+        Object.assign(addUserForm, {
+          AKAname: '',
+          tcpPort: '',
+          remark: '',
+        });
+      };
+
+      // 显示新增用户弹窗
+      const showAddNodeModal = () => {
+        resetForm();
+        editMode.value = false; // 新增用户时，编辑模式为false
+        isAddUserModalVisible.value = true;
+      };
+
+      // 关闭弹窗
+      const closeAddUserModal = () => {
+        isAddUserModalVisible.value = false;
+        resetForm();
+      };
+
+      // 编辑用户
+      const handleEdit = (record) => {
+        Object.assign(addUserForm, { ...record });
+        isAddUserModalVisible.value = true;
+        editMode.value = true; // 编辑模式
+      };
+
+      // 保存新增或编辑用户
+      const handleAddOrEditUser = () => {
+        if (!addUserForm.AKAname) {
+          message.error('请填写所有必填字段');
+          return;
+        }
+
+        if (editMode.value) {
+          // 编辑模式，找到并更新数据
+          const userIndex = data.value.findIndex(
+            (user) => user.AKAname === addUserForm.AKAname
+          );
+          if (userIndex !== -1) {
+            data.value[userIndex] = { ...addUserForm }; // 更新用户信息
+            message.success('节点组更新成功');
+          }
+        } else {
+          // 新增用户
+          data.value.push({ ...addUserForm });
+          message.success('节点组新增成功');
+        }
+
+        closeAddUserModal();
+      };
+
+      // 删除用户
+      const handleDelete = (AKAname) => {
+        Modal.confirm({
+          title: '确认删除',
+          content: `你确定要删除节点组 ${AKAname} 吗？`,
+          onOk: () => {
+            data.value = data.value.filter((item) => item.AKAname !== AKAname);
+            message.success(`用户 ${AKAname} 已删除`);
+          },
+        });
+      };
+
+      // 批量删除
+      const bulkDelete = () => {
+        if (selectedKeys.value.length === 0) {
+          message.warning('请先选择要删除的用户');
+          return;
+        }
+
+        Modal.confirm({
+          title: '确认删除',
+          content: '你确定要删除选中的节点组吗？',
+          onOk: () => {
+            data.value = data.value.filter(
+              (item) => !selectedKeys.value.includes(item.AKAname)
+            );
+            selectedKeys.value = [];
+            message.success('该节点组删除成功');
+          },
+        });
+      };
+
+      // 搜索节点组
+      const searchAKAname = (value) => {
+        searchKeyword.value = value.trim();
+      };
+
+      return {
+        selectedKeys,
+        isAddUserModalVisible,
+        addUserForm,
+        data,
+        columns,
+        filteredData,
+        searchAKAname,
+        showAddNodeModal,
+        closeAddUserModal,
+        handleDelete,
+        bulkDelete,
+        handleEdit,
+        handleAddOrEditUser,
+      };
     },
-    {
-      title: 'Salary',
-      dataIndex: 'salary',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-    },
-    {
-      title: 'Email',
-      dataIndex: 'email',
-    },
-  ];
-  const data = reactive([
-    {
-      key: '1',
-      name: 'Jane Doe',
-      salary: 23000,
-      address: '32 Park Road, London',
-      email: 'jane.doe@example.com',
-    },
-    {
-      key: '2',
-      name: 'Alisa Ross',
-      salary: 25000,
-      address: '35 Park Road, London',
-      email: 'alisa.ross@example.com',
-    },
-    {
-      key: '3',
-      name: 'Kevin Sandra',
-      salary: 22000,
-      address: '31 Park Road, London',
-      email: 'kevin.sandra@example.com',
-    },
-    {
-      key: '4',
-      name: 'Ed Hellen',
-      salary: 17000,
-      address: '42 Park Road, London',
-      email: 'ed.hellen@example.com',
-    },
-    {
-      key: '5',
-      name: 'William Smith',
-      salary: 27000,
-      address: '62 Park Road, London',
-      email: 'william.smith@example.com',
-    },
-  ]);
+  };
 </script>
 
 <style scoped lang="less"></style>

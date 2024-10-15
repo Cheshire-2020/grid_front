@@ -31,13 +31,13 @@
               编辑
             </a-button>
             <a-popconfirm
-                content="确定删除该节点组吗？"
-                @ok="handleDelete(record.id)"
+              content="确定删除该节点组吗？"
+              @ok="handleDelete(record.id)"
             >
               <a-button
-                  type="primary"
-                  status="danger"
-                  @click="handleDelete(record)"
+                type="primary"
+                status="danger"
+                @click="handleDelete(record)"
               >
                 <icon-delete />
                 删除
@@ -79,7 +79,7 @@
         { title: '内存', key: 'memory', customRender: 'memory' },
         { title: '磁盘', key: 'disk', customRender: 'disk' },
         { title: '任务', dataIndex: 'task', key: 'task' },
-        { title: '操作', slotName: 'action', },
+        { title: '操作', slotName: 'action' },
       ];
 
       const data = ref([
