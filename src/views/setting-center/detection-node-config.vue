@@ -24,9 +24,25 @@
         row-key="ip"
         pagination
       >
-        <template #operation="{ record }">
+        <template #action="{ record }">
           <a-space>
-            <a-button type="link" @click="viewDetails(record)">详情</a-button>
+            <a-button type="primary" @click="openEditModal(record)">
+              <icon-edit />
+              编辑
+            </a-button>
+            <a-popconfirm
+                content="确定删除该节点组吗？"
+                @ok="handleDelete(record.id)"
+            >
+              <a-button
+                  type="primary"
+                  status="danger"
+                  @click="handleDelete(record)"
+              >
+                <icon-delete />
+                删除
+              </a-button>
+            </a-popconfirm>
           </a-space>
         </template>
 
@@ -63,7 +79,7 @@
         { title: '内存', key: 'memory', customRender: 'memory' },
         { title: '磁盘', key: 'disk', customRender: 'disk' },
         { title: '任务', dataIndex: 'task', key: 'task' },
-        { title: '操作', key: 'operation', customRender: 'operation' },
+        { title: '操作', slotName: 'action', },
       ];
 
       const data = ref([
@@ -107,11 +123,16 @@
         // Add modal or redirect logic here
       };
 
+      const handleDelete = (record) => {
+        data.value = data.value.filter((item) => item.id !== record.id);
+      };
+
       return {
         selectedKeys: [],
         columns,
         data,
         viewDetails,
+        handleDelete,
       };
     },
   };

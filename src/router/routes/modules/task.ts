@@ -27,7 +27,7 @@ const DASHBOARD: AppRouteRecordRaw = {
       name: 'task-list',
       component: () => import('@/views/task/task-list.vue'),
       meta: {
-        locale: '任务管理',
+        locale: '任务列表',
         requiresAuth: true,
         roles: ['*'],
       },
