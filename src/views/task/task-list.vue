@@ -73,6 +73,11 @@
             </div>
           </div>
         </template>
+        <template #taskName="{ record }">
+          <a-link :href="`/task/task-detail/${record.id}`" icon>{{
+            record.taskName
+          }}</a-link>
+        </template>
       </a-table>
     </a-space>
   </basic-container>
@@ -106,7 +111,7 @@
         { title: '扫描次数', dataIndex: 'scanCount' },
         { title: '扫描结果个数', dataIndex: 'resultCount' },
         { title: '进度', slotName: 'process' },
-        { title: '任务详情', key: 'action' },
+        { title: '任务详情', slotName: 'taskName' },
       ];
 
       const data = ref([
@@ -124,6 +129,7 @@
           percent3: 0.9, // 拓扑探测进度
           resultCount: 10,
           status: 'running', // running（进行中）、paused（已暂停）、stopped（已停止）
+          taskName: '任务详情',
         },
         {
           id: 2,
@@ -139,6 +145,7 @@
           percent3: 0.8, // 拓扑探测进度
           resultCount: 5,
           status: 'paused',
+          taskName: '任务详情',
         },
         {
           id: 3,
@@ -154,6 +161,7 @@
           percent3: 0.8, // 拓扑探测进度
           resultCount: 5,
           status: 'paused',
+          taskName: '任务详情',
         },
       ]);
 

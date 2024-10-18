@@ -93,6 +93,7 @@
         function travel(_route: RouteRecordRaw[], nodes = []) {
           if (_route) {
             _route.forEach((element) => {
+              if (element.meta?.hidden) return; // 如果 hidden 为 true，则跳过该路由
               // This is demo, modify nodes as needed
               const icon = element?.meta?.icon
                 ? () => h(compile(`<${element?.meta?.icon}/>`))

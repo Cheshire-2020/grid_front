@@ -32,6 +32,17 @@ const DASHBOARD: AppRouteRecordRaw = {
         roles: ['*'],
       },
     },
+    {
+      path: 'task-detail/:id', // 动态路由参数
+      name: 'task-detail',
+      component: () => import('@/views/task/task-detail.vue'),
+      meta: {
+        hidden: true,
+        locale: '任务详情',
+        requiresAuth: true,
+        roles: ['*'],
+      },
+    },
   ],
 };
 
