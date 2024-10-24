@@ -7,7 +7,7 @@ export default {
   'workplace.onlineContent': 'Online Content',
   'workplace.putIn': 'Put In',
   'workplace.newDay': 'Daily Additional Comments',
-  'workplace.newFromYesterday': 'New From Yesterday',
+  'workplace.NumIPv6Assets': 'Number of  IPv6 Assets',
   'workplace.minute': 'Min',
   'workplace.docs': 'Documents',
   'workplace.docs.productOverview': 'Product Overview',

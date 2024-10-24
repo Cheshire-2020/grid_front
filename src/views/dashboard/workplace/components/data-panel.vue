@@ -86,7 +86,7 @@
           />
         </a-avatar>
         <a-statistic
-          :title="$t('workplace.newFromYesterday')"
+          :title="$t('workplace.NumIPv6Assets')"
           :value="2.8"
           :precision="1"
           :value-from="0"
