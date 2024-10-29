@@ -11,32 +11,48 @@
       <template #extra>
         <a-link>{{ $t('workplace.viewMore') }}</a-link>
       </template>
-<!--      <Chart height="289px" :option="chartOption" />-->
+      <!--      <Chart height="289px" :option="chartOption" />-->
 
       <!-- 排名模块 -->
       <div class="ranking-sections">
         <!-- 国家排名 -->
         <a-card class="ranking-card" title="国家排名" hoverable>
           <a-table
-              :columns="countryColumns"
-              :dataSource="countryRanking"
-              row-key="country"
-              :pagination="pagination" />
+            :columns="countryColumns"
+            :dataSource="countryRanking"
+            row-key="country"
+            :pagination="pagination"
+          />
         </a-card>
 
         <!-- 服务排名 -->
         <a-card class="ranking-card" title="服务排名" hoverable>
-          <a-table :columns="serviceColumns" :dataSource="serviceRanking" row-key="service" :pagination="pagination" />
+          <a-table
+            :columns="serviceColumns"
+            :dataSource="serviceRanking"
+            row-key="service"
+            :pagination="pagination"
+          />
         </a-card>
 
         <!-- 端口排名 -->
         <a-card class="ranking-card" title="端口排名" hoverable>
-          <a-table :columns="portColumns" :dataSource="portRanking" row-key="port" :pagination="pagination" />
+          <a-table
+            :columns="portColumns"
+            :dataSource="portRanking"
+            row-key="port"
+            :pagination="pagination"
+          />
         </a-card>
 
         <!-- 设备类型排名 -->
         <a-card class="ranking-card" title="设备类型排名" hoverable>
-          <a-table :columns="deviceColumns" :dataSource="deviceRanking" row-key="device" :pagination="pagination" />
+          <a-table
+            :columns="deviceColumns"
+            :dataSource="deviceRanking"
+            row-key="device"
+            :pagination="pagination"
+          />
         </a-card>
       </div>
     </a-card>
@@ -300,7 +316,6 @@
   //   }
   // };
 
-
   // 在组件挂载时调用获取数据
   onMounted(() => {
     console.log(countryRanking.value);
@@ -313,19 +328,18 @@
 </script>
 
 <style scoped>
-.ranking-sections {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
+  .ranking-sections {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
 
-.ranking-card {
-  flex: 1;
-  margin-right: 10px;
-}
+  .ranking-card {
+    flex: 1;
+    margin-right: 10px;
+  }
 
-.ranking-card:last-child {
-  margin-right: 0;
-}
-
+  .ranking-card:last-child {
+    margin-right: 0;
+  }
 </style>

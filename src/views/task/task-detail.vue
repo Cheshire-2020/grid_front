@@ -5,7 +5,10 @@
         <a-layout>
           <a-layout-sider theme="dark" style="width: 360px">
             <a-space direction="vertical" fill>
-              <a-card :style="{ width: '100%' , height:'300px' }" title="地图呈现">
+              <a-card
+                :style="{ width: '100%', height: '300px' }"
+                title="地图呈现"
+              >
                 <template #extra>
                   <a-link>More</a-link>
                 </template>
@@ -81,29 +84,61 @@
                       :key="item.id"
                       class="list-item"
                     >
-                      <div class="content row-flex-start" style="min-width: 300px; overflow-x: auto; display: flex;" >
+                      <div
+                        class="content row-flex-start"
+                        style="
+                          min-width: 300px;
+                          overflow-x: auto;
+                          display: flex;
+                        "
+                      >
                         <div class="left_task" id="left_task">
                           <div class="list-header">
-                            <a-space direction="vertical" size="small" style="line-height: 1.5;">
-                              <a style="margin: 0;">{{ item.ip }}</a>
-                              <a-tag style="margin: 0;">{{ item.port }}/{{ item.protocol }}</a-tag>
-                              <div style="display: flex; align-items: center; margin: 0;">
-                                <a-icon type="windows" v-if="item.os === 'Windows'" />
+                            <a-space
+                              direction="vertical"
+                              size="small"
+                              style="line-height: 1.5"
+                            >
+                              <a style="margin: 0">{{ item.ip }}</a>
+                              <a-tag style="margin: 0"
+                                >{{ item.port }}/{{ item.protocol }}</a-tag
+                              >
+                              <div
+                                style="
+                                  display: flex;
+                                  align-items: center;
+                                  margin: 0;
+                                "
+                              >
+                                <a-icon
+                                  type="windows"
+                                  v-if="item.os === 'Windows'"
+                                />
                                 <a-icon type="linux" v-else />
-                                <span style="margin-left: 8px;">{{ item.os }}</span>
+                                <span style="margin-left: 8px">{{
+                                  item.os
+                                }}</span>
                               </div>
-                              <span style="margin: 0;">{{ item.date }}</span>
+                              <span style="margin: 0">{{ item.date }}</span>
                             </a-space>
                           </div>
                         </div>
-                        <div class="right_task" id="right_task" >
+                        <div class="right_task" id="right_task">
                           <!-- 按钮组 -->
                           <div class="button-group">
                             <a-space>
-                              <a-tag color="purple" size="middle">PoC({{item.NumPOC}})</a-tag>
-                              <a-tag color="red" size="middle">高危({{item.NumHighRisk}})</a-tag>
-                              <a-tag color="orange" size="middle" >中危({{item.NumMiddleRisk}})</a-tag>
-                              <a-tag color="blue" size="middle">低危({{item.NumLowRisk}})</a-tag>
+                              <a-tag color="purple" size="middle"
+                                >PoC({{ item.NumPOC }})</a-tag
+                              >
+                              <a-tag color="red" size="middle"
+                                >高危({{ item.NumHighRisk }})</a-tag
+                              >
+                              <a-tag color="orange" size="middle"
+                                >中危({{ item.NumMiddleRisk }})</a-tag
+                              >
+                              <a-tag color="blue" size="middle"
+                                >低危({{ item.NumLowRisk }})</a-tag
+                              >
                               <p></p>
                             </a-space>
                           </div>
@@ -225,10 +260,10 @@
           os: 'Windows',
           date: '2021-04-01',
           riskLevel: '高危',
-          NumPOC:2,
-          NumHighRisk:1,
-          NumMiddleRisk:0,
-          NumLowRisk:1,
+          NumPOC: 2,
+          NumHighRisk: 1,
+          NumMiddleRisk: 0,
+          NumLowRisk: 1,
           httpDetails:
             'HTTP/1.1 200 OK\nDate: Thu, 08 Apr 2021 07:39:17 GMT\nServer: Apache/2.4.29 (Ubuntu)\n...',
         },
@@ -240,10 +275,10 @@
           os: 'Linux',
           date: '2021-04-01',
           riskLevel: '中危',
-          NumPOC:2,
-          NumHighRisk:1,
-          NumMiddleRisk:0,
-          NumLowRisk:1,
+          NumPOC: 2,
+          NumHighRisk: 1,
+          NumMiddleRisk: 0,
+          NumLowRisk: 1,
           httpDetails: 'HTTP/1.1 200 OK\nServer: nginx\n...',
         },
         // 其他数据

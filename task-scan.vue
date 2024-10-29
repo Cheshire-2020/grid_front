@@ -300,62 +300,93 @@
 
           const validatePorts = (ports: string, portType: string) => {
             if (ports && !portRegex.test(ports)) {
-              throw new Error(`${portType} port input format is incorrect. Please enter numbers or number ranges, separated by commas.`);
+              throw new Error(
+                `${portType} port input format is incorrect. Please enter numbers or number ranges, separated by commas.`
+              );
             }
 
-            const portList = ports.split(/\s*,\s*/).filter(port => port !== '');
+            const portList = ports
+              .split(/\s*,\s*/)
+              .filter((port) => port !== '');
 
-            portList.forEach(port => {
+            portList.forEach((port) => {
               if (port.includes('-')) {
-                const [start, end] = port.split('-').map(p => parseInt(p, 10));
+                const [start, end] = port
+                  .split('-')
+                  .map((p) => parseInt(p, 10));
 
-                if (Number.isNaN(start) || Number.isNaN(end) || !isValidPortNumber(start) || !isValidPortNumber(end) || start >= end) {
-                  throw new Error(`${portType} port range "${port}" is invalid. Must be two valid ports (0-65535) separated by a hyphen, with the first port smaller than the second.`);
+                if (
+                  Number.isNaN(start) ||
+                  Number.isNaN(end) ||
+                  !isValidPortNumber(start) ||
+                  !isValidPortNumber(end) ||
+                  start >= end
+                ) {
+                  throw new Error(
+                    `${portType} port range "${port}" is invalid. Must be two valid ports (0-65535) separated by a hyphen, with the first port smaller than the second.`
+                  );
                 }
               } else {
                 const singlePort = parseInt(port, 10);
 
-                if (Number.isNaN(singlePort) || !isValidPortNumber(singlePort)) {
-                  throw new Error(`${portType} port "${port}" is invalid. Must be a number between 0 and 65535.`);
+                if (
+                  Number.isNaN(singlePort) ||
+                  !isValidPortNumber(singlePort)
+                ) {
+                  throw new Error(
+                    `${portType} port "${port}" is invalid. Must be a number between 0 and 65535.`
+                  );
                 }
               }
             });
           };
 
           const targetsArray = formData.targets
-            ? formData.targets.split('\n').map(target => target.trim()).filter(target => target !== '')
+            ? formData.targets
+                .split('\n')
+                .map((target) => target.trim())
+                .filter((target) => target !== '')
             : [];
 
           const validateTargets = (targets: string[], scanType: number) => {
             const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
             const ipv6Regex = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
-            const domainRegex = /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/;
+            const domainRegex =
+              /^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+$/;
             const nodeNameRegex = /^[a-zA-Z0-9_-]+$/;
 
             targets.forEach((target, index) => {
               switch (scanType) {
                 case 1: // IPv4
                   if (!ipv4Regex.test(target)) {
-                    throw new Error(`Invalid IPv4 address at line ${index + 1}: ${target}`);
+                    throw new Error(
+                      `Invalid IPv4 address at line ${index + 1}: ${target}`
+                    );
                   }
                   break;
                 case 2: // IPv6
                   if (!ipv6Regex.test(target)) {
-                    throw new Error(`Invalid IPv6 address at line ${index + 1}: ${target}`);
+                    throw new Error(
+                      `Invalid IPv6 address at line ${index + 1}: ${target}`
+                    );
                   }
                   break;
                 case 3: // Domain
                   if (!domainRegex.test(target)) {
-                    throw new Error(`Invalid domain name at line ${index + 1}: ${target}`);
+                    throw new Error(
+                      `Invalid domain name at line ${index + 1}: ${target}`
+                    );
                   }
                   break;
                 case 4: // Node Name
                   if (!nodeNameRegex.test(target)) {
-                    throw new Error(`Invalid node name at line ${index + 1}: ${target}`);
+                    throw new Error(
+                      `Invalid node name at line ${index + 1}: ${target}`
+                    );
                   }
                   break;
-               default:
-                 throw new Error(`Invalid scan type: ${scanType}`);
+                default:
+                  throw new Error(`Invalid scan type: ${scanType}`);
               }
             });
           };
@@ -369,7 +400,7 @@
             typeOfTask: formData.taskType,
             name: formData.taskName,
             executeNow: formData.executionType,
-            priority: formData.priority
+            priority: formData.priority,
           };
 
           let taskData;
@@ -380,8 +411,12 @@
               onlyHostDetection: formData.hostDetection,
               saveAsNodeGroup: formData.saveAsNodeGroup,
               targets: targetsArray,
-              tcpPorts: formData.tcpPorts.split(/\s*,\s*/).filter(port => port !== ''),
-              udpPorts: formData.udpPorts.split(/\s*,\s*/).filter(port => port !== ''),
+              tcpPorts: formData.tcpPorts
+                .split(/\s*,\s*/)
+                .filter((port) => port !== ''),
+              udpPorts: formData.udpPorts
+                .split(/\s*,\s*/)
+                .filter((port) => port !== ''),
             };
           } else {
             taskData = {
@@ -408,7 +443,7 @@
 
           const finalTaskData = {
             ...taskData,
-            advancedConfiguration: advancedConfig
+            advancedConfiguration: advancedConfig,
           };
 
           // 这里你可以调用API提交任务数据
@@ -417,7 +452,10 @@
           Message.success('Task created successfully');
           console.log(finalTaskData);
         } catch (error) {
-          Message.error(error.message || 'Submission failed. Please check your input and try again.');
+          Message.error(
+            error.message ||
+              'Submission failed. Please check your input and try again.'
+          );
         }
       };
 
