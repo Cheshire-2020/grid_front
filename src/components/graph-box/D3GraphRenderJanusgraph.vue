@@ -303,6 +303,7 @@
       .attr('class', 'node')
       .attr('id', (d) => `node_${d.id}`)
       // 点击的事件
+
       .on('click', (d) => {
         lockGraph();
         onNodeClick(d.id);

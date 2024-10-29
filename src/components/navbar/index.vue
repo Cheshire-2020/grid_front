@@ -45,6 +45,20 @@
         </a-tooltip>
       </li>
       <li>
+        <a-tooltip :content="$t('settings.screen')">
+          <a-button
+              class="nav-btn"
+              type="outline"
+              :shape="'circle'"
+              @click="setVisible"
+          >
+            <template #icon>
+              <icon-computer />
+            </template>
+          </a-button>
+        </a-tooltip>
+      </li>
+      <li>
         <a-tooltip :content="$t('settings.title')">
           <a-button
             class="nav-btn"
