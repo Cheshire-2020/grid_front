@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "@arco-design/web-vue": "^2.56.2",
+    "@kjgl77/datav-vue3": "^1.7.4",
     "@vueuse/core": "^9.3.0",
     "ant-design-vue": "^4.2.5",
     "arco-design-pro-vue": "^2.7.3",

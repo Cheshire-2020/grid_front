@@ -10,24 +10,27 @@
 </template>
 
 <script setup>
-  import { ref, onMounted } from 'vue';
-  import { nodes, edges } from '@/mock/mock-graph';
+  import { onMounted, ref } from 'vue';
   import { saveSessionAttr } from '@/utils/session_loader';
   import D3GraphRenderJanusgraph from '@/components/graph-box/D3GraphRenderJanusgraph.vue';
-  import formatResultForJanusGraph from '@/utils/janus_graph_formatter';
-
-  const nodeData = ref([]);
-  const edgeData = ref([]);
+  import { formatResultForMysqlGraph } from '@/utils/janus_graph_formatter';
+  import axios from 'axios';
 
   const childRef = ref(null);
 
+  const nodeDataMysql = ref([]);
+  const edgeDataMysql = ref([]);
+
   onMounted(() => {
-    const res = formatResultForJanusGraph(nodes(), edges());
-    nodeData.value = res.node;
-    edgeData.value = res.edge;
-    saveSessionAttr('nodes_janus', nodeData.value);
-    saveSessionAttr('edges_janus', edgeData.value);
-    childRef.value.init(nodeData.value, edgeData.value);
+    axios.get('http://localhost:8080/allgraph').then((res) => {
+      const { node, edge } = formatResultForMysqlGraph(
+        res.data.nodes,
+        res.data.edges
+      );
+      saveSessionAttr('nodes_janus', node);
+      saveSessionAttr('edges_janus', edge);
+      childRef.value.init(node, edge);
+    });
   });
 </script>
 

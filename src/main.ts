@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import ArcoVue from '@arco-design/web-vue';
+import DataVVue from '@kjgl77/datav-vue3';
 import ArcoVueIcon from '@arco-design/web-vue/es/icon';
 import globalComponents from '@/components';
 import router from './router';
@@ -20,6 +21,8 @@ const app = createApp(App);
 
 app.use(ArcoVue, {});
 app.use(ArcoVueIcon);
+
+app.use(DataVVue);
 
 app.use(router);
 app.use(store);

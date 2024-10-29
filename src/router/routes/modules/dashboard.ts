@@ -8,7 +8,7 @@ const DASHBOARD: AppRouteRecordRaw = {
   meta: {
     locale: '全局搜索',
     requiresAuth: true,
-    icon: 'icon-computer',
+    icon: 'icon-search',
     order: 0,
   },
   children: [
