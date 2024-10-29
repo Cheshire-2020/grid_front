@@ -1,7 +1,7 @@
 <template>
   <basic-container>
     <a-space>
-      <a-button type="primary" @click="restartTask">重启</a-button>
+      <a-button type="primary" @click="startTask">开始</a-button>
       <a-button type="primary" @click="pauseTask">暂停</a-button>
       <a-button type="primary" @click="continueTask">继续检测</a-button>
       <a-button type="primary" @click="stopTask">停止</a-button>
@@ -26,9 +26,9 @@
     <p></p>
 
     <a-space direction="vertical" size="large" fill>
-      <a-table
+      <a-table 
         v-model:selectedKeys="selectedKeys"
-        row-key="name"
+        row-key="id"
         :columns="columns"
         :data="filteredData"
         :row-selection="rowSelection"
@@ -73,28 +73,23 @@
             </div>
           </div>
         </template>
-        <template #taskName="{ record }">
-          <a-link :href="`/task/task-detail/${record.id}`" icon>{{
-            record.taskName
-          }}</a-link>
-        </template>
       </a-table>
     </a-space>
   </basic-container>
 </template>
 
 <script>
-  import { ref, reactive, onMounted, computed, watch } from 'vue';
-  import { message } from 'ant-design-vue';
+  import { ref, reactive, onMounted, onUnmounted } from 'vue';
+  import { message as antdMessage } from 'ant-design-vue';
   import BasicContainer from '@/layout/basic-container.vue';
-  // 引入Ant Design Vue的消息组件
+  import axios from 'axios';
 
   export default {
     components: { BasicContainer },
     setup() {
       const selectedKeys = ref([]);
       const searchKeyword = ref(''); // 搜索关键词
-
+      let socket;
       const rowSelection = reactive({
         type: 'checkbox',
         showCheckedAll: true,
@@ -103,6 +98,7 @@
       const pagination = { pageSize: 5 };
 
       const columns = [
+        { title: '任务id', dataIndex: 'id' },
         { title: '任务名称', dataIndex: 'name' },
         { title: '任务类型', dataIndex: 'type' },
         { title: '起止时间', slotName: 'time' },
@@ -111,137 +107,150 @@
         { title: '扫描次数', dataIndex: 'scanCount' },
         { title: '扫描结果个数', dataIndex: 'resultCount' },
         { title: '进度', slotName: 'process' },
-        { title: '任务详情', slotName: 'taskName' },
+        { title: '任务详情', key: 'action' },
       ];
 
-      const data = ref([
-        {
-          id: 1,
-          name: '任务1',
-          type: '探测任务',
-          timeStart: '2024-10-01 12:00',
-          timeEnd: '2024-10-01 14:00',
-          target: '192.168.0.1-192.168.0.100',
-          ports: 'TCP:80,443',
-          scanCount: 1,
-          percent1: 0.3, // 存活探测进度
-          percent2: 0.6, // 指纹探测进度
-          percent3: 0.9, // 拓扑探测进度
-          resultCount: 10,
-          status: 'running', // running（进行中）、paused（已暂停）、stopped（已停止）
-          taskName: '任务详情',
-        },
-        {
-          id: 2,
-          name: '任务2',
-          type: '探测任务',
-          timeStart: '2024-10-01 12:00',
-          timeEnd: '2024-10-01 14:00',
-          target: '192.168.1.1-192.168.1.100',
-          ports: 'TCP:22',
-          scanCount: 2,
-          percent1: 0.4, // 存活探测进度
-          percent2: 0.7, // 指纹探测进度
-          percent3: 0.8, // 拓扑探测进度
-          resultCount: 5,
-          status: 'paused',
-          taskName: '任务详情',
-        },
-        {
-          id: 3,
-          name: '任务3',
-          type: '探测任务',
-          timeStart: '2024-10-01 12:00',
-          timeEnd: '2024-10-01 14:00',
-          target: '192.168.1.1-192.168.1.100',
-          ports: 'TCP:22',
-          scanCount: 2,
-          percent1: 0.4, // 存活探测进度
-          percent2: 0.7, // 指纹探测进度
-          percent3: 0.8, // 拓扑探测进度
-          resultCount: 5,
-          status: 'paused',
-          taskName: '任务详情',
-        },
-      ]);
+      const data = ref([]);
+      const filteredData = ref([]);
 
-      // eslint-disable-next-line no-shadow
-      const getStrokeColor = (task) => {
-        switch (task.status) {
-          case 'paused':
-            return '#FADB14'; // 黄色
-          case 'stopped':
-            return '#FF4D4F'; // 红色
-          case 'finished':
-            return '#52C41A'; // 绿色
-          default:
-            return '#1890FF'; // 蓝色
-        }
-      };
-
-      // 返回进度条的状态 const  function
-      const getProgressStatus = (task) => {
-        if (task.status === 'paused') return 'active'; // Ant Design的状态
-        if (task.status === 'stopped') return 'exception';
-        if (task.status === 'finished') return 'success';
-        return 'normal';
-      };
-
-      // 过滤后的数据:filteredData：这是表格中显示的任务数据，用户搜索时会对其进行过滤。它基于data动态更新。
-      const filteredData = ref([...data.value]);
-
-      // searchTask函数：根据输入的关键词，过滤任务数据，过滤规则是任务名称中包含搜索关键词（不区分大小写）
-      function searchTask(value) {
-        const keyword = value.trim().toLowerCase(); // 去除空格并转换为小写
-        if (keyword === '') {
-          // 如果关键词为空，显示所有数据
-          filteredData.value = [...data.value];
-        } else {
-          // 根据关键词进行过滤
-          filteredData.value = data.value.filter((task) =>
-            task.name.toLowerCase().includes(keyword)
+      // 加载任务数据
+      const loadTaskData = async () => {
+        try {
+          antdMessage.loading('加载数据中...', 0);
+          const response = await axios.get(
+            'http://172.18.17.113:8888/taskManage/getAlltask'
           );
+          console.log(response);
+
+          if (response.data.code === '200') {
+            data.value = response.data.data.map((task) => {
+              if (task.typeOfTask === 1) {
+                return {
+                  id: task.taskID,
+                  type: '节点探测',
+                  name: task.name,
+                  priority: task.priority,
+                  target: task.targets.join(', '),
+                  ports: `TCP: ${task.tcpPorts.join(', ')}; UDP: ${task.udpPorts.join(', ')}`,
+                  scanCount: 1,
+                  resultCount: 0,
+                };
+              }
+              return {
+                id: task.taskID,
+                name: task.name,
+                type: 'POC/插件任务',
+                scanCount: 1,
+                resultCount: 0,
+                target: task.usingNodeGroup,
+                ports: '无',
+              };
+            });
+
+            filteredData.value = [...data.value];
+            antdMessage.destroy();
+            antdMessage.success('数据加载成功');
+          } else {
+            antdMessage.destroy();
+            antdMessage.error('数据加载失败');
+          }
+        } catch (error) {
+          antdMessage.destroy();
+          antdMessage.error('数据加载失败');
+          console.error('Error loading tasks:', error);
         }
-      }
+      };
 
-      // 动态增加进度条百分比
-      function updateProgress(task) {
-        if (task.status === 'running') {
-          // 逐个进度条检查并更新，确保每次增加0.01，并且防止浮点数精度问题
-          if (task.percent1 < 1) {
-            task.percent1 = Math.min((task.percent1 * 100 + 1) / 100, 1); // 确保增加0.01
-          }
-          if (task.percent2 < 1) {
-            task.percent2 = Math.min((task.percent2 * 100 + 1) / 100, 1); // 确保增加0.01
-          }
-          if (task.percent3 < 1) {
-            task.percent3 = Math.min((task.percent3 * 100 + 1) / 100, 1); // 确保增加0.01
-          }
-
-          if (
-            task.percent1 === 1 &&
-            task.percent2 === 1 &&
-            task.percent3 === 1
-          ) {
-            task.status = 'finished';
-            message.success(`${task.name} 已完成`);
-          }
-        }
-      }
-
-      // 每秒更新一次进度
-      let intervalId;
+      // 组件挂载时加载数据
       onMounted(() => {
-        intervalId = setInterval(() => {
-          data.value.forEach(updateProgress);
-        }, 1000);
+        loadTaskData();
       });
 
-      // 任务控制
+      // 组件卸载时关闭 WebSocket 连接
+      onUnmounted(() => {
+        if (socket) {
+          socket.close();
+        }
+      });
+
+      // 任务控制函数
+      function startTask() {
+        const selectedId = selectedKeys.value.length > 0 ? selectedKeys.value[0] : null;
+
+        if (selectedId) {
+          const task = data.value.find((t) => t.id === selectedId);
+          if (task) {
+            // 初始化 WebSocket 监听任务进度
+            socket = new WebSocket('ws://172.18.17.113:8888/task-websocket');
+
+            socket.onopen = () => {
+              console.log('WebSocket 已连接');
+              // 发送选中的任务 ID
+              socket.send(
+                JSON.stringify({
+
+
+                  
+                  taskId: task.id,
+                })
+              );
+
+              // 发送API请求
+              const url =
+                task.type === '节点探测'
+                  ? `http://172.18.17.113:8888/taskManage/startNodeTask?taskID=${task.id}`
+                  : `http://172.18.17.113:8888/taskManage/startPocTask?taskID=${task.id}`;
+
+              axios
+                .get(url)
+                .then((response) => {
+                  if (response.status === 200) {
+                    task.status = 'running';
+                    task.percent1 = 0;
+                    task.percent2 = 0;
+                    task.percent3 = 0;
+                    antdMessage.success('任务已成功开始');
+                  } else {
+                    antdMessage.error('任务开始失败');
+                  }
+                })
+                .catch((error) => {
+                  console.error('Error starting task:', error);
+                  antdMessage.error('任务开始时发生错误');
+                });
+            };
+
+            socket.onmessage = (event) => {
+              const wsMessage = JSON.parse(event.data);
+              console.log('收到 WebSocket 消息：', wsMessage);
+               console.log(wsMessage.taskID);
+               console.log(task.id);
+              // 根据收到的任务 ID 更新任务的进度
+              if (task.id === wsMessage.taskID) {
+                console.log(task.rate);
+                task.percent1 = (wsMessage.rate)/100;
+                task.percent2 = (wsMessage.rate)/100;
+                task.percent3 = (wsMessage.rate)/100;
+              }
+            };
+
+            socket.onerror = (error) => {
+              console.error('WebSocket 错误: ', error);
+            };
+
+            socket.onclose = () => {
+              console.log('WebSocket 已断开');
+            };
+          }
+        } else {
+          antdMessage.warning('未选中任何任务');
+        }
+      }
+
       function pauseTask() {
         selectedKeys.value.forEach((key) => {
-          const task = data.value.find((t) => t.name === key);
-          if (task.status === 'running') {
+          const task = data.value.find((t) => t.id === key);
+          if (task && task.status === 'running') {
             task.status = 'paused';
           }
         });
@@ -249,8 +258,8 @@
 
       function continueTask() {
         selectedKeys.value.forEach((key) => {
-          const task = data.value.find((t) => t.name === key);
-          if (task.status === 'paused') {
+          const task = data.value.find((t) => t.id === key);
+          if (task && task.status === 'paused') {
             task.status = 'running';
           }
         });
@@ -258,124 +267,72 @@
 
       function stopTask() {
         selectedKeys.value.forEach((key) => {
-          const task = data.value.find((t) => t.name === key);
-          task.status = 'stopped';
-        });
-      }
-
-      function restartTask() {
-        selectedKeys.value.forEach((key) => {
-          const task = data.value.find((t) => t.name === key);
-          task.percent1 = 0;
-          task.percent2 = 0;
-          task.percent3 = 0;
-          task.status = 'running';
+          const task = data.value.find((t) => t.id === key);
+          if (task) {
+            task.status = 'stopped';
+          }
         });
       }
 
       function bulkDelete() {
-        data.value = data.value.filter(
-          (task) => !selectedKeys.value.includes(task.name)
-        );
-        message.success('选中的任务已删除');
+        data.value = data.value.filter((task) => !selectedKeys.value.includes(task.id));
+        filteredData.value = [...data.value];
+        antdMessage.success('选中的任务已删除');
       }
 
-      // 设置进度条颜色
-      function getProgressColor(status) {
-        console.log(status);
-        switch (status) {
-          case 'paused':
-            return '#FADB14'; // 黄色
-          case 'stopped':
-            return '#FF4D4F'; // 红色
-          case 'finished':
-            return '#52C41A'; // 绿色
-          default:
-            return '#1890FF'; // 蓝色
+      function refreshData() {
+        antdMessage.loading('正在刷新数据...', 0);
+        loadTaskData();
+      }
+
+      function searchTask(value) {
+        const keyword = value.trim().toLowerCase();
+        if (keyword === '') {
+          filteredData.value = [...data.value];
+        } else {
+          filteredData.value = data.value.filter((task) =>
+            task.name.toLowerCase().includes(keyword)
+          );
         }
       }
 
-      // 模拟刷新数据
-      function refreshData() {
-        message.loading('正在刷新数据...', 0);
+      const getStrokeColor = (task) => {
+        switch (task.status) {
+          case 'paused':
+            return '#FADB14';
+          case 'stopped':
+            return '#FF4D4F';
+          case 'finished':
+            return '#52C41A';
+          default:
+            return '#1890FF';
+        }
+      };
 
-        setTimeout(() => {
-          // 模拟刷新后从后端获取新数据
-          data.value = [
-            {
-              id: 1,
-              name: '任务1',
-              type: '探测任务',
-              timeStart: '2024-10-01 12:00',
-              timeEnd: '2024-10-01 14:00',
-              target: '192.168.0.1-192.168.0.100',
-              ports: 'TCP:80,443',
-              scanCount: 2, // 更新扫描次数
-              percent1: 0.5,
-              percent2: 0.8,
-              percent3: 0.9,
-              resultCount: 15,
-              status: 'running',
-            },
-            {
-              id: 2,
-              name: '任务2',
-              type: '探测任务',
-              timeStart: '2024-10-01 12:00',
-              timeEnd: '2024-10-01 14:00',
-              target: '192.168.1.1-192.168.1.100',
-              ports: 'TCP:22',
-              scanCount: 3, // 更新扫描次数
-              percent1: 0.6,
-              percent2: 0.9,
-              percent3: 1.0,
-              resultCount: 7,
-              status: 'paused', // 更新状态
-            },
-            {
-              id: 4,
-              name: '任务4',
-              type: '探测任务',
-              timeStart: '2024-10-02 09:00',
-              timeEnd: '2024-10-02 11:00',
-              target: '192.168.2.1-192.168.2.50',
-              ports: 'TCP:23',
-              scanCount: 1,
-              percent1: 0.2,
-              percent2: 0.4,
-              percent3: 0.5,
-              resultCount: 3,
-              status: 'running',
-            },
-          ];
-          filteredData.value = [...data.value]; // 刷新后同步更新过滤后的数据,确保数据刷新后搜索仍然有效。
-          message.destroy(); // 停止 loading 信息
-          message.success('数据已刷新');
-        }, 2000); // 模拟 2 秒的加载时间
-      }
+      const getProgressStatus = (task) => {
+        if (task.status === 'paused') return 'active';
+        if (task.status === 'stopped') return 'exception';
+        if (task.status === 'finished') return 'success';
+        return 'normal';
+      };
 
-      function deleteTask(task) {
-        data.value = data.value.filter((t) => t.id !== task.id);
-        message.success('任务已删除');
-      }
       return {
         rowSelection,
         columns,
         data,
+        filteredData,
         selectedKeys,
         pagination,
+        startTask,
         pauseTask,
         continueTask,
         stopTask,
-        restartTask,
         bulkDelete,
-        getProgressColor,
+        refreshData,
+        searchTask,
         getStrokeColor,
         getProgressStatus,
-        refreshData,
         searchKeyword,
-        searchTask,
-        filteredData,
       };
     },
   };
