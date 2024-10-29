@@ -1,26 +1,14 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+
+import BasicContainer from "@/layout/basic-container.vue";
+</script>
 
 <template>
-  <dv-full-screen-container>
-    <div class="module-box">
-      <div style="flex: 0 1 50%">
-        <dv-border-box1 style="width: 100%; height: 200px">
-          dv-border-box1
-        </dv-border-box1>
-      </div>
-      <div style="flex: 0 1 50%">
-        <dv-border-box1 style="width: 100%; height: 200px">
-          dv-border-box1
-        </dv-border-box1>
-      </div>
-    </div>
-  </dv-full-screen-container>
+  <basic-container>
+      <h1>略略略</h1>
+  </basic-container>
 </template>
 
-<style scoped>
-  .module-box {
-    display: flex;
-    justify-content: space-between;
-    margin: 5px;
-  }
+<style scoped lang="less">
+
 </style>
